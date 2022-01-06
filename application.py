@@ -1,12 +1,48 @@
+import sys
+import os
+import argparse
 import sqlite3
+
 from googletrans import Translator
+
+parser = argparse.ArgumentParser(description="Translate your Kindle Vocabulary.")
+parser.add_argument(
+    "-l",
+    "--lang",
+    required=True,
+    type=str,
+    help="Language to translate to (DE, EN, FR, etc.)",
+)
+parser.add_argument(
+    "-f",
+    "--file",
+    type=str,
+    default="vocab.db",
+    help="Location of your vocab.db file",
+)
+parser.add_argument(
+    "-o",
+    "--output",
+    type=str,
+    default="dictionary.db",
+    help="Location of your output dictionary file",
+)
+
+args = parser.parse_args()
+
+if args.file and not os.path.isfile(args.file):
+    print("{} not found".format(args.file))
+    sys.exit(1)
 
 translator = Translator()
 
 
 def read_words():
     to_translate = []
-    con = sqlite3.connect("vocab.db")
+    if args.file and os.path.isfile(args.file):
+        con = sqlite3.connect(args.file)
+    else:
+        con = sqlite3.connect("vocab.db")
     cur = con.cursor()
 
     # use GROUP BY to remove duplicates
@@ -20,7 +56,10 @@ def read_words():
 
 
 if __name__ == "__main__":
-    con = sqlite3.connect("dictionary.db")
+    if args.output:
+        con = sqlite3.connect(args.output)
+    else:
+        con = sqlite3.connect("dictionary.db")
     cur = con.cursor()
     cur.execute(
         "CREATE TABLE IF NOT EXISTS dictionary (original TEXT, translated TEXT)"
@@ -31,7 +70,7 @@ if __name__ == "__main__":
     for word_pair in words:
         try:
             result = translator.translate(
-                word_pair["word"], src=word_pair["lang"], dest="de"
+                word_pair["word"], src=word_pair["lang"], dest=args.lang
             )
         except TypeError:
             pass

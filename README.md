@@ -8,3 +8,18 @@ Translate your Kindle Vocabulary Builder from the source language into your nati
 ```
 pip install -U -r requirements.txt
 ```
+
+## usage
+
+```
+usage: application.py [-h] -l LANG [-f FILE] [-o OUTPUT]
+
+Translate your Kindle Vocabulary.
+
+options:
+  -h, --help            show this help message and exit
+  -l LANG, --lang LANG  Language to translate to (DE, EN, FR, etc.)
+  -f FILE, --file FILE  Location of your vocab.db file
+  -o OUTPUT, --output OUTPUT
+                        Location of your output dictionary file
+```
