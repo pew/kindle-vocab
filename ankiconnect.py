@@ -11,8 +11,15 @@ def submit(**kwargs):
                 "note": {
                     "deckName": "kindle",
                     "modelName": "Basic",
-                    "fields": {"Front": kwargs.get("front"), "Back": kwargs.get("back")},
-                }
+                    "fields": {
+                        "Front": kwargs.get("front"),
+                        "Back": kwargs.get("back"),
+                    },
+                    "options": {
+                        "allowDuplicate": False,
+                        "duplicateScope": "deck",
+                    },
+                },
             },
         },
     )
@@ -23,4 +30,4 @@ con = sqlite3.connect("dictionary.db")
 cur = con.cursor()
 
 for o, t in cur.execute("SELECT original, translated FROM dictionary"):
-    submit(front=o,back=t)
+    submit(front=o, back=t)
