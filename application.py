@@ -57,11 +57,13 @@ def read_words():
     cur = con.cursor()
 
     # use GROUP BY to remove duplicates
-    for w, l in cur.execute("SELECT word, lang FROM words GROUP BY word"):
+    for w, l in cur.execute(
+        "SELECT LOWER(word), LOWER(lang) FROM words GROUP BY LOWER(word)"
+    ):
         # account for en-US, de-DE, only take the first (en, de)
         if "-" in l:
             l = l[:2]
-        to_translate.append({"word": w.lower(), "lang": l.lower()})
+        to_translate.append({"word": w, "lang": l})
     con.close()
     return to_translate
 
